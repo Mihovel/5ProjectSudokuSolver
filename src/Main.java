@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Main {
 
+    static boolean toExit = false;
+
     public static void prePreFillArrayFirstTime(String[][] SudokuBoard) {
         for (int i = 0; i < SudokuBoard.length; i++) {
             for (int j = 0; j < SudokuBoard.length; j++) {
@@ -82,6 +84,7 @@ public class Main {
 
 
     public static void solveSudoku(String[][] SudokuBoard, int posI, int posJ) {
+        toExit = false;
         int bestI = 0;
         int bestJ = 0;
         List<String> listForNextIJ = new ArrayList<>();
@@ -101,8 +104,11 @@ public class Main {
                         List<String> getAllNumberForIJ = new ArrayList<>();
                         getAllPossibleNumbersForCurrentPosition(SudokuBoard, getAllNumberForIJ, i, j);
                         if (getAllNumberForIJ.size() == 0) {
-                            SudokuBoard[posI][posJ] = ".";
-                            break; //точно break?
+                            toExit = true;
+                            break;
+                        }
+                        if (toExit){
+                            break;
                         }
                         if (getAllNumberForIJ.size() == 1) {
                             SudokuBoard[i][j] = getAllNumberForIJ.get(0);
@@ -115,11 +121,19 @@ public class Main {
                             }
                         }
                     }
+                    if (toExit){
+                        break;
+                    }
+                }
+                if (toExit){
+                    break;
                 }
             }
-            for (String s : listForNextIJ) {
-                SudokuBoard[bestI][bestJ] = s;
-                solveSudoku(SudokuBoard, bestI, bestJ);
+            if (!toExit) {
+                for (String s : listForNextIJ) {
+                    SudokuBoard[bestI][bestJ] = s;
+                    solveSudoku(SudokuBoard, bestI, bestJ);
+                }
             }
         }
     }
@@ -131,7 +145,7 @@ public class Main {
         preFillArrayFirstTime(SudokuBoard);
         //printArray(SudokuBoard);
         List<String> lst = new ArrayList<>();
-        solveSudoku(SudokuBoard, 0 ,0);
+        solveSudoku(SudokuBoard, 0, 0);
         printArray(SudokuBoard);
     }
 }
