@@ -1,6 +1,7 @@
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -57,7 +58,8 @@ public class Main {
         }
     }
 
-    public static void getAllPossibleNumbersForCurrentPosition(String[][] SudokuBoard, List<String> getAllPossibleNumbersForCurrentPosition, int I, int J) {
+    public static List<String> getAllPossibleNumbersForCurrentPosition(String[][] SudokuBoard, int I, int J) {
+        List<String> getAllPossibleNumbersForCurrentPosition = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
             getAllPossibleNumbersForCurrentPosition.add(Integer.toString(i));
         }
@@ -73,13 +75,14 @@ public class Main {
         }
         int startingI = Math.floorDiv(I, 3) * 3;
         int startingJ = Math.floorDiv(J, 3) * 3;
-        for (int i = startingI; i < startingI + 2; i++) {
-            for (int j = startingJ; j < startingJ + 2; j++) {
+        for (int i = startingI; i < startingI + 3; i++) {
+            for (int j = startingJ; j < startingJ + 3; j++) {
                 if (SudokuBoard[i][j].matches("[1-9]?")) {
                     getAllPossibleNumbersForCurrentPosition.remove(SudokuBoard[i][j]);
                 }
             }
         }
+        return getAllPossibleNumbersForCurrentPosition;
     }
 
 
@@ -101,13 +104,12 @@ public class Main {
             for (int i = 0; i < SudokuBoard.length; i++) {
                 for (int j = 0; j < SudokuBoard.length; j++) {
                     if (SudokuBoard[i][j].equals(".")) {
-                        List<String> getAllNumberForIJ = new ArrayList<>();
-                        getAllPossibleNumbersForCurrentPosition(SudokuBoard, getAllNumberForIJ, i, j);
+                        List<String> getAllNumberForIJ =   getAllPossibleNumbersForCurrentPosition(SudokuBoard, i, j);
                         if (getAllNumberForIJ.size() == 0) {
                             toExit = true;
                             break;
                         }
-                        if (toExit){
+                        if (toExit) {
                             break;
                         }
                         if (getAllNumberForIJ.size() == 1) {
@@ -121,31 +123,41 @@ public class Main {
                             }
                         }
                     }
-                    if (toExit){
+                    if (toExit) {
                         break;
                     }
                 }
-                if (toExit){
+                if (toExit) {
                     break;
                 }
             }
             if (!toExit) {
                 for (String s : listForNextIJ) {
                     SudokuBoard[bestI][bestJ] = s;
-                    solveSudoku(SudokuBoard, bestI, bestJ);
+                    System.out.println("bestI = " + bestI);
+                    System.out.println("bestJ = " + bestJ);
+                    printArray(SudokuBoard);
+                    System.out.println();
+                    String[][] SudokuBoardRec = new String[9][9];
+                    for (int i = 0; i < SudokuBoard.length; i++) {
+                        System.arraycopy(SudokuBoard[i], 0, SudokuBoardRec[i], 0, SudokuBoard[i].length);
+                    }
+                    solveSudoku(SudokuBoardRec, bestI, bestJ);
                 }
             }
+
+        }
+        else {
         }
     }
 
     public static void main(String[] args) {
-
         String[][] SudokuBoard = new String[9][9];
         prePreFillArrayFirstTime(SudokuBoard);
         preFillArrayFirstTime(SudokuBoard);
         //printArray(SudokuBoard);
         List<String> lst = new ArrayList<>();
         solveSudoku(SudokuBoard, 0, 0);
-        printArray(SudokuBoard);
     }
+
 }
