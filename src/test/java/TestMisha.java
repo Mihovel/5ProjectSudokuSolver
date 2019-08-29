@@ -53,4 +53,30 @@ public class TestMisha {
         Assert.assertTrue(equalLists(expectedList11, list11));
     }
 
+
+    @Test
+    public void testNeighbors25() {
+        String[][] sudokuBoard = new String[9][9];
+        Main.prePreFillArrayFirstTime(sudokuBoard);
+        Main.preFillArrayFirstTime(sudokuBoard);
+        List<String> list11 = Main.getAllPossibleNumbersForCurrentPosition(sudokuBoard, 2, 5);
+        ArrayList<String> expectedList11 = new ArrayList<>();
+        expectedList11.add("5");
+        Assert.assertEquals(expectedList11, list11);
+        Assert.assertTrue(equalLists(expectedList11, list11));
+    }
+    @Test
+    public void testNeighbors03() {
+        String[][] sudokuBoard = new String[9][9];
+        Main.prePreFillArrayFirstTime(sudokuBoard);
+        Main.preFillArrayFirstTime(sudokuBoard);
+        Main.printArray(sudokuBoard);
+        List<String> list11 = Main.getAllPossibleNumbersForCurrentPosition(sudokuBoard, 0, 3);
+        ArrayList<String> expectedList11 = new ArrayList<>();
+        expectedList11.add("2");
+        Assert.assertEquals(expectedList11, list11);
+        Assert.assertTrue(equalLists(expectedList11, list11));
+    }
+
+
 }
