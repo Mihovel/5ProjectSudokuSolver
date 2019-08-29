@@ -1,9 +1,9 @@
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+
+    static boolean toExit;
 
     public static void prePreFillArrayFirstTime(String[][] SudokuBoard) {
         for (int i = 0; i < SudokuBoard.length; i++) {
@@ -81,12 +81,14 @@ public class Main {
     }
 
 
-    public static void solveSudoku(String[][] SudokuBoard, int posI, int posJ) {
+    public static void solveSudoku(String[][] SudokuBoard, List<ElementAsIJ> toDelete) {
+        toExit = false;
         int bestI = 0;
         int bestJ = 0;
         List<String> listForNextIJ = new ArrayList<>();
         int smallestLength = 9;
         boolean isSudokuBoardFilled = true;
+        List<ElementAsIJ> rtd = new ArrayList<>();
         for (int i = 0; i < SudokuBoard.length; i++) {
             for (int j = 0; j < SudokuBoard.length; j++) {
                 if (SudokuBoard[i][j].equals(".")) {
@@ -101,10 +103,19 @@ public class Main {
                         List<String> getAllNumberForIJ = new ArrayList<>();
                         getAllPossibleNumbersForCurrentPosition(SudokuBoard, getAllNumberForIJ, i, j);
                         if (getAllNumberForIJ.size() == 0) {
-                            SudokuBoard[posI][posJ] = ".";
-                            break; //точно break?
+                            for (ElementAsIJ elementAsIJ : toDelete) {
+                                SudokuBoard[elementAsIJ.getI()][elementAsIJ.getJ()] = ".";
+                            }
+                            toExit = true;
+                            break;
+                        }
+
+                        if (toExit) {
+
+                            break;
                         }
                         if (getAllNumberForIJ.size() == 1) {
+                            rtd.add(new ElementAsIJ(i, j));
                             SudokuBoard[i][j] = getAllNumberForIJ.get(0);
                         } else {
                             if (getAllNumberForIJ.size() < smallestLength) {
@@ -115,11 +126,21 @@ public class Main {
                             }
                         }
                     }
+                    if (toExit) {
+
+                        break;
+                    }
+                }
+                if (toExit) {
+
+                    break;
                 }
             }
-            for (String s : listForNextIJ) {
-                SudokuBoard[bestI][bestJ] = s;
-                solveSudoku(SudokuBoard, bestI, bestJ);
+            if (!toExit) {
+                for (String s : listForNextIJ) {
+                    SudokuBoard[bestI][bestJ] = s;
+                    solveSudoku(SudokuBoard, rtd);
+                }
             }
         }
     }
@@ -130,8 +151,8 @@ public class Main {
         prePreFillArrayFirstTime(SudokuBoard);
         preFillArrayFirstTime(SudokuBoard);
         //printArray(SudokuBoard);
-        List<String> lst = new ArrayList<>();
-        solveSudoku(SudokuBoard, 0 ,0);
+        List<ElementAsIJ> toDelete = new ArrayList<>();
+        solveSudoku(SudokuBoard, toDelete);
         printArray(SudokuBoard);
     }
 }
