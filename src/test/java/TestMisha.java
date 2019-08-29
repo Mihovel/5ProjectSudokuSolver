@@ -40,4 +40,17 @@ public class TestMisha {
         Collections.sort(two);
         return one.equals(two);
     }
+
+    @Test
+    public void testNeighbors111() {
+        String[][] sudokuBoard = new String[9][9];
+        Main.prePreFillArrayFirstTime(sudokuBoard);
+        Main.preFillArrayFirstTime(sudokuBoard);
+        List<String> list11 = Main.getAllPossibleNumbersForCurrentPosition(sudokuBoard, 4, 4);
+        ArrayList<String> expectedList11 = new ArrayList<>();
+        expectedList11.add("5");
+        Assert.assertEquals(expectedList11, list11);
+        Assert.assertTrue(equalLists(expectedList11, list11));
+    }
+
 }
